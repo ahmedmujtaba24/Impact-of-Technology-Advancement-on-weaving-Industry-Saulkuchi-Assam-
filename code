@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from collections import defaultdict
 
 # ==================== DATA ANALYSIS SCRIPT ====================
 
@@ -160,3 +161,191 @@ for bar in bars:
 plt.grid(axis='y', alpha=0.2)
 plt.tight_layout()
 plt.show()
+
+plt.style.use('seaborn')
+plt.rcParams['figure.facecolor'] = 'white'
+
+# ==================== HOUSE TYPE ANALYSIS ====================
+house_type = [
+    0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0,
+    1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+    0, 0
+]
+
+house_df = pd.DataFrame(house_type, columns=['HouseType'])
+house_df['HouseType'] = house_df['HouseType'].map({0: 'Pakka', 1: 'Kacha'})
+house_counts = house_df['HouseType'].value_counts()
+house_perc = (house_df['HouseType'].value_counts(normalize=True) * 100
+
+plt.figure(figsize=(8, 5))
+bars = plt.bar(house_counts.index, house_counts.values, color=['#4e79a7', '#f28e2b'])
+plt.title('House Type Distribution', fontsize=14)
+plt.xlabel('Type of House', fontsize=12)
+plt.ylabel('Number of Households', fontsize=12)
+
+for bar in bars:
+    height = bar.get_height()
+    perc = house_perc[bar.get_label()]
+    plt.text(bar.get_x() + bar.get_width()/2, height, 
+             f'{height}\n({perc:.1f}%)', ha='center', va='bottom')
+
+plt.grid(axis='y', alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# ==================== AMENITIES ANALYSIS ====================
+amenities_data = [
+    [0,1,2,3], [0,1,2,3], [0,1,2,3], [0,1,2,3], [0,1,2,3],
+    [0,1,3], [0,1,2], [0,1,2], [0,1,2], [0,1,2,3],
+    [0,1], [0,1,2,3], [0,1,3], [0], [0,1,2,3],
+    [0,1,2,3], [0], [0,1,3], [0,1,2], [0,2],
+    [0,1,2,3], [0,1,2,3], [0,1,2,3], [0,1,2,3], [0,1,3],
+    [0,3], [0,3], [0,1], [0,1,2], [0,1,2,3],
+    [0], [0], [0], [1], [1], [1]
+]
+
+amenities_df = pd.DataFrame(columns=['Electricity', 'Clean Water', 'Sanitation Facility', 'Internet Access'])
+for household in amenities_data:
+    row = {
+        'Electricity': 1 if 0 in household else 0,
+        'Clean Water': 1 if 1 in household else 0,
+        'Sanitation Facility': 1 if 2 in household else 0,
+        'Internet Access': 1 if 3 in household else 0
+    }
+    amenities_df = amenities_df.append(row, ignore_index=True)
+
+amenities_summary = amenities_df.sum().sort_values(ascending=False)
+amenities_perc = (amenities_summary / len(amenities_df) * 100
+
+plt.figure(figsize=(10, 5))
+bars = plt.bar(amenities_summary.index, amenities_perc.values,
+               color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
+plt.title('Household Amenities Availability', fontsize=14)
+plt.xlabel('Amenity Type', fontsize=12)
+plt.ylabel('Percentage of Households (%)', fontsize=12)
+plt.ylim(0, 100)
+
+for bar in bars:
+    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height(),
+             f'{bar.get_height():.1f}%', ha='center', va='bottom')
+
+plt.grid(axis='y', alpha=0.2)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# ==================== OCCUPATION ANALYSIS ====================
+occupation_data = [
+    3, [1,3], 1, 1, 1, [1,3], 3, 1, 1, 1,
+    1, 3, 1, 1, 1, 1, 1, "5(Service)", "5(Service)", 3,
+    1, 5, 1, 1, 5, 5, 3, 1, 1, "5(Service)",
+    1, 1, 1, 1, 1, "5(Service)", 1, 1, 3, 3,
+    3, 3, 3, 1, 3, 1, 1, 1, 1, "5(Service)",
+    "5(Service)", 1, "5(Service)", 3, 1, "5(Service)", 3, 1, 1,
+    3, 1, 1, 3, 1, 1, 1
+]
+
+occupation_counts = defaultdict(int)
+for entry in occupation_data:
+    if isinstance(entry, list):
+        codes = entry
+    else:
+        codes = [5 if isinstance(entry, str) else entry]
+    for code in codes:
+        occupation_counts[code] += 1
+
+occupation_labels = {
+    0: 'Unemployed', 1: 'Self-Employed', 2: 'Farmer',
+    3: 'Small Business Owner', 4: 'Government Employee', 5: 'Other'
+}
+
+occupation_summary = pd.DataFrame([
+    {'Occupation': occupation_labels[code], 'Count': count, 
+     'Percentage': (count/len(occupation_data))*100}
+    for code, count in occupation_counts.items()
+]).sort_values('Count', ascending=False)
+
+plt.figure(figsize=(10, 5))
+bars = plt.bar(occupation_summary['Occupation'], occupation_summary['Count'],
+               color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b'])
+plt.title('Occupation Distribution', fontsize=14)
+plt.xlabel('Occupation Type', fontsize=12)
+plt.ylabel('Number of Respondents', fontsize=12)
+
+for bar in bars:
+    height = bar.get_height()
+    perc = occupation_summary[occupation_summary['Occupation'] == bar.get_label()]['Percentage'].values[0]
+    plt.text(bar.get_x() + bar.get_width()/2, height,
+             f'{height}\n({perc:.1f}%)', ha='center', va='bottom')
+
+plt.grid(axis='y', alpha=0.2)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# ==================== EDUCATION ANALYSIS ====================
+education_data = [
+    2, 2, 2, 2, 2, 2, 2, 2, 1, 1,
+    2, 2, 0, 2, 3, 2, 1, 1, 1, 2,
+    2, 3, 2, 2, 1, 2, 2, 1, 1, 1,
+    2, 2, 2, 2, 2, 2, 1, 1, 2, 2,
+    1, 2, 2, 2, 1, 0, 0, 1, 0, 0,
+    0, 0, 0, 1, 1, 0, 0, 1, 0, 1,
+    2, 1, 0, 0, 2, 2
+]
+
+education_df = pd.DataFrame(education_data, columns=['Education'])
+education_df['Education'] = education_df['Education'].map({
+    0: 'No Formal Education', 1: 'Primary', 
+    2: 'High School', 3: 'Graduate', 4: 'Others'
+})
+
+education_counts = education_df['Education'].value_counts()
+education_perc = (education_df['Education'].value_counts(normalize=True) * 100)
+
+plt.figure(figsize=(10, 5))
+bars = plt.bar(education_counts.index, education_counts.values,
+               color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'])
+plt.title('Education Qualification Distribution', fontsize=14)
+plt.xlabel('Education Level', fontsize=12)
+plt.ylabel('Number of Respondents', fontsize=12)
+
+for bar in bars:
+    height = bar.get_height()
+    perc = education_perc[bar.get_label()]
+    plt.text(bar.get_x() + bar.get_width()/2, height,
+             f'{height}\n({perc:.1f}%)', ha='center', va='bottom')
+
+plt.grid(axis='y', alpha=0.3)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Print all summaries
+print("\n=== HOUSE TYPE SUMMARY ===")
+print(pd.DataFrame({
+    'House Type': house_counts.index,
+    'Count': house_counts.values,
+    'Percentage': house_perc.round(1).values
+}).to_string(index=False))
+
+print("\n=== AMENITIES SUMMARY ===")
+print(pd.DataFrame({
+    'Amenity': amenities_summary.index,
+    'Households': amenities_summary.values,
+    'Percentage (%)': amenities_perc.round(1).values
+}).to_string(index=False))
+
+print("\n=== OCCUPATION SUMMARY ===")
+print(occupation_summary[['Occupation', 'Count', 'Percentage']]
+      .rename(columns={'Percentage': 'Percentage (%)'})
+      .round(1).to_string(index=False))
+
+print("\n=== EDUCATION SUMMARY ===")
+print(pd.DataFrame({
+    'Education Level': education_counts.index,
+    'Count': education_counts.values,
+    'Percentage (%)': education_perc.round(1).values
+}).to_string(index=False))
