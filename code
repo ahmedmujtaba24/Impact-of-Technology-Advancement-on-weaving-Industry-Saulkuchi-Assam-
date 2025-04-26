@@ -1,88 +1,120 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# ==================== AGE DISTRIBUTION ANALYSIS ====================
-print("\n" + "="*40 + " AGE ANALYSIS " + "="*40)
+# ==================== DATA ANALYSIS SCRIPT ====================
 
+def analyze_and_plot(data, column_name, labels, title):
+    """Helper function to analyze and plot categorical data"""
+    df = pd.DataFrame(data, columns=[column_name])
+    df[column_name] = df[column_name].map(labels)
+    
+    counts = df[column_name].value_counts()
+    percentages = (df[column_name].value_counts(normalize=True) * 100).round(1)
+    
+    # Create summary DataFrame
+    summary = pd.DataFrame({
+        'Count': counts,
+        'Percentage': percentages
+    }).sort_index()
+    
+    # Plotting
+    plt.figure(figsize=(10, 5))
+    bars = plt.bar(summary.index, summary['Count'], color='skyblue')
+    plt.title(f'{title} Distribution')
+    plt.xlabel(title)
+    plt.ylabel('Count')
+    
+    # Add percentage labels
+    for bar in bars:
+        height = bar.get_height()
+        percentage = summary.loc[bar.get_label(), 'Percentage']
+        plt.text(bar.get_x() + bar.get_width()/2, height, 
+                f'{height}\n({percentage}%)', 
+                ha='center', va='bottom')
+    
+    plt.xticks(rotation=45 if len(summary) > 2 else 0)
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+    
+    return summary
+
+# ==================== AGE DISTRIBUTION ====================
+print("\n" + "="*40 + " AGE ANALYSIS " + "="*40)
 ages = [
-    50, 55, 76, 57, 53, 93, 50, 29, 31, 52, 50, 80, 37, 55, 40, 56, 46, 42, 40, 48,
-    25, 45, 35, 50, 31, 45, 51, 40, 36, 55, 30, 40, 40, 44, 44, 28, 48, 40, 39, 38,
-    55, 36, 55, 60, 30, 40, 48, 35, 38, 35, 50, 39, 40, 32, 46, 57, 32, 50, 48, 45,
-    53, 54, 56, 50, 43, 45
+    50, 55, 76, 57, 53, 93, 50, 29, 31, 52, 50, 80, 37, 55, 40, 56, 
+    46, 42, 40, 48, 25, 45, 35, 50, 31, 45, 51, 40, 36, 55, 30, 40, 
+    40, 44, 44, 28, 48, 40, 39, 38, 55, 36, 55, 60, 30, 40, 48, 35, 
+    38, 35, 50, 39, 40, 32, 46, 57, 32, 50, 48, 45, 53, 54, 56, 50, 
+    43, 45
 ]
 
-# Create DataFrame and bin ages
 age_df = pd.DataFrame(ages, columns=['Age'])
-bins = [20, 30, 40, 50, 60, 70, 80, 90]
-labels = ['20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89']
-age_df['Age_Group'] = pd.cut(age_df['Age'], bins=bins, right=False, labels=labels)
+bins = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+labels = ['20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90+']
+age_df['Age_Group'] = pd.cut(age_df['Age'], bins=bins, labels=labels, right=False)
 
-# Count and visualize
 age_counts = age_df['Age_Group'].value_counts().sort_index()
-print("\nAge Distribution:")
-print(age_counts)
+age_percent = (age_df['Age_Group'].value_counts(normalize=True) * 100
 
-plt.figure(figsize=(10, 5))
-age_counts.plot(kind='bar', color='skyblue', edgecolor='black')
-plt.title('Age Distribution of Weavers')
-plt.xlabel('Age Group')
-plt.ylabel('Count')
-plt.xticks(rotation=45)
-plt.grid(axis='y', linestyle='--', alpha=0.7)
-plt.tight_layout()
-plt.show()
+age_summary = pd.DataFrame({
+    'Age Group': age_counts.index,
+    'Count': age_counts.values,
+    'Percentage': age_percent.round(1).values
+})
 
-# ==================== GENDER DISTRIBUTION ANALYSIS ====================
+print("\nAge Distribution Summary:")
+print(age_summary.to_string(index=False))
+
+# ==================== GENDER DISTRIBUTION ====================
 print("\n" + "="*40 + " GENDER ANALYSIS " + "="*40)
-
 gender_data = [
     0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1,
     1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
     1, 0, 1, 1, 1, 1
 ]
+gender_labels = {0: 'Male', 1: 'Female'}
+gender_summary = analyze_and_plot(gender_data, 'Gender', gender_labels, 'Gender')
 
-gender_df = pd.DataFrame(gender_data, columns=['Gender'])
-gender_df['Gender'] = gender_df['Gender'].map({0: 'Male', 1: 'Female'})
-gender_counts = gender_df['Gender'].value_counts()
-
-print("\nGender Distribution:")
-print(gender_counts)
-
-plt.figure(figsize=(6, 6))
-gender_counts.plot(kind='pie', autopct='%1.1f%%', colors=['lightblue', 'lightpink'])
-plt.title('Gender Distribution')
-plt.ylabel('')
-plt.show()
-
-# ==================== CASTE DISTRIBUTION ANALYSIS ====================
+# ==================== CASTE DISTRIBUTION ====================
 print("\n" + "="*40 + " CASTE ANALYSIS " + "="*40)
-
 caste_data = [
-    0,3,1,1,0,1,0,3,0,1,0,1,0,3,3,0,0,0,0,3,3,3,3,1,1,0,3,1,3,1,1,1,0,1,0,0,
-    3,3,3,3,0,3,1,1,3,3,3,2,0,0,0,1,0,0,0,0,1,2,1,1,0,1,1,1,0,0
+    0,3,1,1,0,1,0,3,0,1,0,1,0,3,3,0,0,0,0,3,3,3,3,1,1,0,3,1,3,1,1,1,
+    0,1,0,0,3,3,3,3,0,3,1,1,3,3,3,2,0,0,0,1,0,0,0,0,1,2,1,1,0,1,1,1,0,0
 ]
+caste_labels = {0: "General", 1: "SC", 2: "ST", 3: "OBC"}
+caste_summary = analyze_and_plot(caste_data, 'Caste', caste_labels, 'Caste')
 
-caste_mapping = {0: "General", 1: "SC", 2: "ST", 3: "OBC"}
-caste_df = pd.DataFrame(caste_data, columns=['Caste'])
-caste_df['Caste'] = caste_df['Caste'].map(caste_mapping)
-caste_counts = caste_df['Caste'].value_counts()
+# ==================== MARITAL STATUS ====================
+print("\n" + "="*40 + " MARITAL STATUS ANALYSIS " + "="*40)
+marital_data = [
+    1,1,1,1,3,1,1,1,1,1,1,3,1,1,1,1,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1
+]
+marital_labels = {0: 'Single', 1: 'Married', 2: 'Divorced', 3: 'Widowed'}
+marital_summary = analyze_and_plot(marital_data, 'Marital Status', marital_labels, 'Marital Status')
 
-print("\nCaste Distribution:")
-print(caste_counts)
+# ==================== FAMILY TYPE ====================
+print("\n" + "="*40 + " FAMILY TYPE ANALYSIS " + "="*40)
+family_data = [
+    1,0,1,1,1,0,0,0,1,0,0,1,1,1,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,1,
+    1,0,1,1,0,0,0,1,1,0,0,1,1,1,1,1,0,0,1,0,0,0,1,1,1,1,1,1,0,1,1,1,0,1
+]
+family_labels = {0: 'Joint Family', 1: 'Nuclear Family'}
+family_summary = analyze_and_plot(family_data, 'Family Type', family_labels, 'Family Type')
 
-plt.figure(figsize=(8, 5))
-caste_counts.plot(kind='bar', color=['#4e79a7', '#f28e2b', '#e15759', '#76b7b2'])
-plt.title('Caste Distribution')
-plt.xlabel('Caste Category')
-plt.ylabel('Count')
-plt.xticks(rotation=0)
-plt.grid(axis='y', alpha=0.3)
-plt.show()
+# ==================== PRIMARY LANGUAGE ====================
+print("\n" + "="*40 + " LANGUAGE ANALYSIS " + "="*40)
+language_data = [
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+]
+language_labels = {0: 'Hindi', 1: 'English', 2: 'Assamese', 3: 'Others (Bengali)'}
+language_summary = analyze_and_plot(language_data, 'Language', language_labels, 'Primary Language')
 
 # ==================== AMENITIES ANALYSIS ====================
 print("\n" + "="*40 + " AMENITIES ANALYSIS " + "="*40)
-
 amenities_data = [
     [0,1,2,3], [0,1,2,3], [0,1,2,3], [0,1,2,3], [0,1,2,3],
     [0,1,3], [0,1,2], [0,1,2], [0,1,2], [0,1,2,3],
@@ -97,19 +129,27 @@ amenities_map = {0: 'Electricity', 1: 'Clean Water', 2: 'Sanitation', 3: 'Intern
 amenities_df = pd.DataFrame(columns=amenities_map.values())
 
 for household in amenities_data:
-    row = {amenity: 1 if code in household else 0 for code, amenity in amenities_map.items()}
+    row = {amenities_map[code]: 1 for code in household}
     amenities_df = amenities_df.append(row, ignore_index=True)
 
+amenities_df = amenities_df.fillna(0)
 availability = amenities_df.sum().sort_values(ascending=False)
 percentage = (availability / len(amenities_df) * 100
 
-print("\nAmenities Availability:")
-print(pd.DataFrame({'Count': availability, 'Percentage': percentage.round(1)}))
+amenities_summary = pd.DataFrame({
+    'Amenity': availability.index,
+    'Households': availability.values,
+    'Percentage': percentage.round(1).values
+})
+
+print("\nAmenities Availability Summary:")
+print(amenities_summary.to_string(index=False))
 
 plt.figure(figsize=(10, 5))
-bars = plt.bar(percentage.index, percentage, color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
-plt.title('Household Amenities Availability')
-plt.ylabel('Percentage (%)')
+bars = plt.bar(amenities_summary['Amenity'], amenities_summary['Percentage'], 
+               color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
+plt.title('Household Amenities Availability (%)')
+plt.ylabel('Percentage of Households')
 plt.ylim(0, 100)
 
 for bar in bars:
