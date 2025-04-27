@@ -19,9 +19,9 @@ This project analyzes the effects of technological advancements on the tradition
   - **Data Source/**:  
     Raw data files and primary research materials.  
     _Survey_Data.xlsx_, _Interview_Notes.pdf_
-  - **Processed Data/**:  
-    Cleaned and organized datasets ready for analysis.  
-    _Processed_Survey_Data.xlsx_
+  - **SpreadSheet Data/**:  
+   Raw data files in spreadsheet format
+    _2ndSem_Survey_Data.xlsx_
 
 - **Code/**:  
   All Python scripts for data analysis and visualizations.  
