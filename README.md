@@ -33,9 +33,6 @@ This project analyzes the effects of technological advancements on the tradition
   Final findings and detailed insights.  
   [**_Final_Report.pdf_/**](https://drive.google.com/file/d/1NqAV8Yhs3r_E7xV5_d01VYA7_jZsTj4H/view?usp=drive_link):  
 
-- **Visuals/**:  
-  Graphs, charts, and visual representations of key findings.  
-  _Visual_Analysis.pdf_
 
 ---
 
