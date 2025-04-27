@@ -29,7 +29,7 @@ This project analyzes the effects of technological advancements on the tradition
   _(Includes scripts for data cleaning, analysis, and plotting graphs.)_
 
 
-- **Report/**:  
+[**Report/**](https://drive.google.com/file/d/1NqAV8Yhs3r_E7xV5_d01VYA7_jZsTj4H/view?usp=drive_link):  
   Final findings and detailed insights.  
   _Final_Report.pdf_
 
