@@ -24,14 +24,14 @@ This project analyzes the effects of technological advancements on the tradition
 [_2ndSem_Survey_Data.xlsx_](https://github.com/ahmedmujtaba24/Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam-/blob/main/2ndSem_survey_data.xlsx)
 
 
-- [**Code/**](https://github.com/ahmedmujtaba24/Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam-/tree/main/Code):  
+- [**Code/**  
   All Python scripts for data analysis and visualizations.  
-  _(Includes scripts for data cleaning, analysis, and plotting graphs.)_
+  [**Code/**](https://github.com/ahmedmujtaba24/Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam-/tree/main/Code):
 
 
-- [**Report/**](https://drive.google.com/file/d/1NqAV8Yhs3r_E7xV5_d01VYA7_jZsTj4H/view?usp=drive_link):  
+- **Report/**  
   Final findings and detailed insights.  
-  _Final_Report.pdf_
+  [**_Final_Report.pdf_/**](https://drive.google.com/file/d/1NqAV8Yhs3r_E7xV5_d01VYA7_jZsTj4H/view?usp=drive_link):  
 
 - **Visuals/**:  
   Graphs, charts, and visual representations of key findings.  
