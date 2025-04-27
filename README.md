@@ -18,7 +18,7 @@ This project analyzes the effects of technological advancements on the tradition
 - **Data/**:
   - **Data Source/**:  
     Raw data files and primary research materials.  
-    _Survey_Data.xlsx_, _Interview_Notes.pdf_
+  [_2ndSem_Survey_Data.xlsx_](https://github.com/ahmedmujtaba24/Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam-/blob/main/2ndSem_survey_data.xlsx)
   - **SpreadSheet Data/**:  
   Raw data files in spreadsheet format  
 [_2ndSem_Survey_Data.xlsx_](https://github.com/ahmedmujtaba24/Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam-/blob/main/2ndSem_survey_data.xlsx)
