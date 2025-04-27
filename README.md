@@ -1,2 +1,2 @@
-# Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam-
+# Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam
 
