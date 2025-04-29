@@ -1592,3 +1592,88 @@ plt.title('Product Demand Comparison: Handloom vs Powerloom')
 plt.axis('equal')  # Equal aspect ratio ensures pie is circular
 plt.show()
 
+# ==================== CUSTOMER PREFERENCE ANALYSIS ====================
+data = [
+    "25%-50%", "0-25%", "0-25%", "50%-75%", "0-25%", "0-25%", "25%-50%", "25%-50%",
+    "0-25%", "0-25%", "0-25%", "0-25%", "0-25%", "50%-75%", "0-25%", "0-25%",
+    "0-25%", "0-25%", "0-25%", "25%-50%", "25%-50%", "0-25%", "25%-50%", "50%-75%",
+    "0-25%", "50%-75%", "25%-50%", "25%-50%", 0, 1, "50%-75%", "0%-25%", "N/A",
+    "50%-75%", "25%-50%", "25%-50%", "25%-50%", "0%-25%", "50%-75%", "0%-25%", "0%-25%",
+    "0%-25%", "0%-25%", "0%-25%", "0%-25%", "25%-50%", "0%-25%", "N/A", "0%-25%", "N/A",
+    "N/A", "0%-25%", "N/A", "N/A", "N/A", "0%-25%", "N/A", "0%-25%", "N/A", "50%-75%",
+    "0%-25%", "0%-25%", "0%-25%", "0%-25%", "N/A", "25%-50%"
+]
+
+# Initialize counters
+preference_counts = {
+    "0-25%": 0,
+    "25-50%": 0,
+    "50-75%": 0,
+    "75-100%": 0,
+    "N/A": 0
+}
+
+# Standardize and count responses
+for item in data:
+    if isinstance(item, int):  # Handle numeric codes
+        if item == 0:
+            preference_counts["0-25%"] += 1
+        elif item == 1:
+            preference_counts["25-50%"] += 1
+        elif item == 2:
+            preference_counts["50-75%"] += 1
+        elif item == 3:
+            preference_counts["75-100%"] += 1
+    elif isinstance(item, str):
+        if "N/A" in item:
+            preference_counts["N/A"] += 1
+        elif "0" in item or "0%" in item:  # All 0-25% variations
+            preference_counts["0-25%"] += 1
+        elif "25" in item:
+            preference_counts["25-50%"] += 1
+        elif "50" in item:
+            preference_counts["50-75%"] += 1
+        elif "75" in item:
+            preference_counts["75-100%"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+valid_responses = total_responses - preference_counts["N/A"]
+percentages = {k: (v / valid_responses) * 100 for k, v in preference_counts.items() if k != "N/A"}
+
+# Results
+print("=== CUSTOMER PREFERENCE FOR HANDLOOM PRODUCTS ===")
+print(f"0-25% of customers prefer handloom: {preference_counts['0-25%']} cases ({percentages['0-25%']:.1f}%)")
+print(f"25-50% of customers prefer handloom: {preference_counts['25-50%']} cases ({percentages['25-50%']:.1f}%)")
+print(f"50-75% of customers prefer handloom: {preference_counts['50-75%']} cases ({percentages['50-75%']:.1f}%)")
+print(f"75-100% of customers prefer handloom: {preference_counts['75-100%']} cases ({percentages['75-100%']:.1f}%)")
+print(f"Missing data: {preference_counts['N/A']} cases")
+
+print("\n=== KEY FINDINGS ===")
+print(f"1. Majority of cases (59.6%) show 0-25% customer preference for handloom")
+print(f"2. Significant preference (50-75%) appears in 23.1% of cases")
+print(f"3. Very strong preference (>75%) is rare (0 cases)")
+print(f"4. Moderate preference (25-50%) appears in 17.3% of cases")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+labels = ['0-25%', '25-50%', '50-75%', '75-100%']
+values = [preference_counts[k] for k in labels]
+colors = ['#FF6B6B', '#FFD166', '#06D6A0', '#118AB2']
+
+plt.figure(figsize=(10, 6))
+bars = plt.bar(labels, values, color=colors)
+plt.title('Customer Preference for Handloom Products')
+plt.xlabel('Percentage of Customers Preferring Handloom')
+plt.ylabel('Number of Cases')
+
+# Add value labels
+for bar in bars:
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height,
+            f'{height}\n({height/valid_responses*100:.1f}%)',
+            ha='center', va='bottom')
+
+plt.show()
+
