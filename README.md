@@ -10,6 +10,14 @@ This project analyzes the effects of technological advancements on the tradition
 
 ---
 
+## 📖 Academic Response
+
+This project received strong praise from faculty for its structure, analytical depth, and overall professionalism. Despite being a second-semester undergraduate submission, it was described as "one of the most polished reports" the professor had seen at this level.
+
+The version in this repository reflects the refined model that incorporated additional feedback, including the integration of a profit margin variable in the regression analysis
+
+---
+
 ## 📁 Folder Structure
 
 - **Project Overview/**:  
