@@ -1081,3 +1081,264 @@ plt.ylabel('Number of Weavers')
 plt.text(0, values[0], f"{values[0]} ({yes_percent:.1f}%)", ha='center', va='bottom')
 plt.text(1, values[1], f"{values[1]} ({no_percent:.1f}%)", ha='center', va='bottom')
 plt.show()
+
+# ==================== NEW STAFF EMPLOYMENT ANALYSIS ====================
+data = [
+    1, 1, 0, 1, 1, "N/A", "N/A", 1, 0, 1,
+    "N/A", "N/A", 0, 1, 1, 0, 1, 0, "N/A", "N/A",
+    "N/A", "N/A", "N/A", 0, 1, 1, 0, "N/A", "N/A", 1,
+    0, 1, 0, 1, 0, 1, 0, "N/A", 1, 0,
+    1, 0, 1, 1, 1, 1, 1, 0, 1, 0,
+    "N/A", 1, 0, 1, 0, 1, "N/A", 0, 1, 1,
+    1, "N/A", 0, 1, 1, 1
+]
+
+# Initialize counters
+employment_counts = {
+    "Hired New Staff": 0,    # 0=Yes
+    "No New Staff": 0,       # 1=No
+    "N/A": 0
+}
+
+# Process data
+for response in data:
+    if isinstance(response, str):
+        if "N/A" in response:
+            employment_counts["N/A"] += 1
+        elif "0" in response:  # Handles cases like "0 (1)"
+            employment_counts["Hired New Staff"] += 1
+    else:
+        if response == 0:
+            employment_counts["Hired New Staff"] += 1
+        else:
+            employment_counts["No New Staff"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+valid_responses = total_responses - employment_counts["N/A"]
+yes_percent = (employment_counts["Hired New Staff"] / valid_responses) * 100
+no_percent = (employment_counts["No New Staff"] / valid_responses) * 100
+
+# Results
+print("=== NEW STAFF EMPLOYMENT ===")
+print(f"Hired new staff: {employment_counts['Hired New Staff']} weavers ({yes_percent:.1f}%)")
+print(f"Did not hire: {employment_counts['No New Staff']} weavers ({no_percent:.1f}%)")
+print(f"Missing data: {employment_counts['N/A']} cases")
+
+print("\n=== KEY FINDINGS ===")
+print(f"1. Only {employment_counts['Hired New Staff']} weavers ({yes_percent:.1f}%) hired new staff post-implementation")
+print(f"2. Majority ({employment_counts['No New Staff']} weavers) maintained existing staffing levels")
+print(f"3. New hires occurred in about 1 out of every 3 cases")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+labels = ['Hired New Staff', 'No New Hires']
+values = [employment_counts['Hired New Staff'], employment_counts['No New Staff']]
+colors = ['#FFA500', '#4682B4']  # Orange and Steel Blue
+
+plt.figure(figsize=(8, 6))
+bars = plt.bar(labels, values, color=colors)
+plt.title('New Staff Employment After Technology Implementation')
+plt.ylabel('Number of Weavers')
+
+# Add value labels on bars
+for bar in bars:
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height,
+            f'{height} ({height/valid_responses*100:.1f}%)',
+            ha='center', va='bottom')
+
+plt.show()
+
+# ==================== JOB LOSS ANALYSIS ====================
+data = [
+    (0, "2-3"), 1, 1, 0, 1, "N/A", "N/A", 1, 1, 1,
+    "N/A", "N/A", 1, 1, 1, 1, 1, 0, "N/A", "N/A",
+    "N/A", "N/A", "N/A", 1, 1, 1, 1, "N/A", "N/A", 1,
+    1, 0, 1, 1, 1, 1, 0, "N/A", 1, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, "N/A",
+    1, 1, 1, 1, 1, "N/A", 1, 1, 1, (0, 4),
+    "N/A", 1, (0, 2), 1, 1
+]
+
+# Initialize counters
+loss_counts = {
+    "Job Losses": 0,
+    "No Job Losses": 0,
+    "N/A": 0
+}
+
+loss_magnitude = []
+
+# Process data
+for item in data:
+    if isinstance(item, tuple):  # Cases with magnitude (0, "2-3")
+        loss_counts["Job Losses"] += 1
+        loss_magnitude.append(item[1])
+    elif item == 0:
+        loss_counts["Job Losses"] += 1
+        loss_magnitude.append("1")  # Default 1 if no number specified
+    elif item == 1:
+        loss_counts["No Job Losses"] += 1
+    else:
+        loss_counts["N/A"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+valid_responses = total_responses - loss_counts["N/A"]
+loss_percent = (loss_counts["Job Losses"] / valid_responses) * 100
+no_loss_percent = (loss_counts["No Job Losses"] / valid_responses) * 100
+
+# Analyze loss magnitude
+magnitude_summary = {
+    "1 worker": loss_magnitude.count("1"),
+    "2 workers": loss_magnitude.count("2"),
+    "3 workers": loss_magnitude.count("3"),
+    "4 workers": loss_magnitude.count("4"),
+    "2-3 workers": loss_magnitude.count("2-3")
+}
+
+# Results
+print("=== JOB LOSS ANALYSIS ===")
+print(f"Reported job losses: {loss_counts['Job Losses']} cases ({loss_percent:.1f}%)")
+print(f"No job losses: {loss_counts['No Job Losses']} cases ({no_loss_percent:.1f}%)")
+print(f"Missing data: {loss_counts['N/A']} cases")
+
+print("\n=== JOB LOSS MAGNITUDE ===")
+for range, count in magnitude_summary.items():
+    if count > 0:
+        print(f"{range}: {count} cases")
+
+print("\n=== KEY FINDINGS ===")
+print(f"1. Job losses occurred in {loss_counts['Job Losses']} out of {valid_responses} cases")
+print(f"2. Most common outcome was no job losses ({no_loss_percent:.1f}% of cases)")
+print(f"3. When losses occurred, typically affected 1-3 workers per enterprise")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+# Figure 1: Loss vs No Loss
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+labels = ['Job Losses', 'No Job Losses']
+values = [loss_counts['Job Losses'], loss_counts['No Job Losses']]
+colors = ['#FF6347', '#90EE90']  # Tomato and Light Green
+bars = plt.bar(labels, values, color=colors)
+plt.title('Job Loss Occurrence')
+plt.ylabel('Number of Cases')
+for bar in bars:
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height,
+            f'{height}\n({height/valid_responses*100:.1f}%)',
+            ha='center', va='bottom')
+
+# Figure 2: Loss Magnitude
+plt.subplot(1, 2, 2)
+magnitude_labels = [k for k,v in magnitude_summary.items() if v > 0]
+magnitude_values = [v for v in magnitude_summary.values() if v > 0]
+plt.bar(magnitude_labels, magnitude_values, color='#FFA07A')  # Light Salmon
+plt.title('Workers Affected When Losses Occurred')
+plt.ylabel('Number of Cases')
+plt.xticks(rotation=45)
+for i, v in enumerate(magnitude_values):
+    plt.text(i, v, str(v), ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
+# ==================== JOB LOSS ANALYSIS ====================
+data = [
+    (0, "2-3"), 1, 1, 0, 1, "N/A", "N/A", 1, 1, 1,
+    "N/A", "N/A", 1, 1, 1, 1, 1, 0, "N/A", "N/A",
+    "N/A", "N/A", "N/A", 1, 1, 1, 1, "N/A", "N/A", 1,
+    1, 0, 1, 1, 1, 1, 0, "N/A", 1, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, "N/A",
+    1, 1, 1, 1, 1, "N/A", 1, 1, 1, (0, 4),
+    "N/A", 1, (0, 2), 1, 1
+]
+
+# Initialize counters
+loss_counts = {
+    "Job Losses": 0,
+    "No Job Losses": 0,
+    "N/A": 0
+}
+
+loss_magnitude = []
+
+# Process data
+for item in data:
+    if isinstance(item, tuple):  # Cases with magnitude (0, "2-3")
+        loss_counts["Job Losses"] += 1
+        loss_magnitude.append(item[1])
+    elif item == 0:
+        loss_counts["Job Losses"] += 1
+        loss_magnitude.append("1")  # Default 1 if no number specified
+    elif item == 1:
+        loss_counts["No Job Losses"] += 1
+    else:
+        loss_counts["N/A"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+valid_responses = total_responses - loss_counts["N/A"]
+loss_percent = (loss_counts["Job Losses"] / valid_responses) * 100
+no_loss_percent = (loss_counts["No Job Losses"] / valid_responses) * 100
+
+# Analyze loss magnitude
+magnitude_summary = {
+    "1 worker": loss_magnitude.count("1"),
+    "2 workers": loss_magnitude.count("2"),
+    "3 workers": loss_magnitude.count("3"),
+    "4 workers": loss_magnitude.count("4"),
+    "2-3 workers": loss_magnitude.count("2-3")
+}
+
+# Results
+print("=== JOB LOSS ANALYSIS ===")
+print(f"Reported job losses: {loss_counts['Job Losses']} cases ({loss_percent:.1f}%)")
+print(f"No job losses: {loss_counts['No Job Losses']} cases ({no_loss_percent:.1f}%)")
+print(f"Missing data: {loss_counts['N/A']} cases")
+
+print("\n=== JOB LOSS MAGNITUDE ===")
+for range, count in magnitude_summary.items():
+    if count > 0:
+        print(f"{range}: {count} cases")
+
+print("\n=== KEY FINDINGS ===")
+print(f"1. Job losses occurred in {loss_counts['Job Losses']} out of {valid_responses} cases")
+print(f"2. Most common outcome was no job losses ({no_loss_percent:.1f}% of cases)")
+print(f"3. When losses occurred, typically affected 1-3 workers per enterprise")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+# Figure 1: Loss vs No Loss
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+labels = ['Job Losses', 'No Job Losses']
+values = [loss_counts['Job Losses'], loss_counts['No Job Losses']]
+colors = ['#FF6347', '#90EE90']  # Tomato and Light Green
+bars = plt.bar(labels, values, color=colors)
+plt.title('Job Loss Occurrence')
+plt.ylabel('Number of Cases')
+for bar in bars:
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height,
+            f'{height}\n({height/valid_responses*100:.1f}%)',
+            ha='center', va='bottom')
+
+# Figure 2: Loss Magnitude
+plt.subplot(1, 2, 2)
+magnitude_labels = [k for k,v in magnitude_summary.items() if v > 0]
+magnitude_values = [v for v in magnitude_summary.values() if v > 0]
+plt.bar(magnitude_labels, magnitude_values, color='#FFA07A')  # Light Salmon
+plt.title('Workers Affected When Losses Occurred')
+plt.ylabel('Number of Cases')
+plt.xticks(rotation=45)
+for i, v in enumerate(magnitude_values):
+    plt.text(i, v, str(v), ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
+
