@@ -714,3 +714,164 @@ print(f"Minimum: {min(percentage_values)}%")
 print(f"Maximum: {max(percentage_values)}%")
 print(f"Median: {sorted(percentage_values)[len(percentage_values)//2]}%")
 
+# ==================== POWERLOOM vs HANDLOOM PROFIT ANALYSIS ====================
+data = [
+    "N/A",
+    "P=15%-25%, H=30%-55%",
+    "N/A",
+    "N/A",
+    "H=50%", 
+    "H=300-600",
+    "H=2500",
+    "H=3000, P=2000",
+    "H=1000, P=1000",
+    "H=1000, P=2000",
+    "N/A",
+    "N/A",
+    "N/A",
+    "N/A",
+    "P=65%, H=75%",
+    "P=75%, H=50%",
+    "H=1000, P=1000",
+    "H=1000, P=2000",
+    "H=1000, P=2000",
+    "H=500, P=2000",
+    "N/A",
+    "N/A",
+    "N/A",
+    "N/A",
+    "N/A",
+    "N/A",
+    "N/A",
+    "H=2000, P=500",
+    "N/A",
+    "H=1500",
+    "N/A",
+    "H=450",
+    "P=10%, H=5%",
+    "H=450, P=250",
+    "H=450, P=250",
+    "H=250, P=450",
+    "P=15%-25%, H=35%-50%",
+    "H=1000, P=2000",
+    "P=2000, H=1000",
+    "P=1000, H=1500",
+    "P=2500, H=1250",
+    "P=3000, H=2500",
+    "P=2000, H=500",
+    "H=1000",
+    "H=3000",
+    "P=200, H=100",
+    "P=4000, H=3000",
+    "P=2500, H=2000",
+    "P=400, H=300",
+    "H=3000",
+    "H=2500",
+    "P=3000, H=2000",
+    "H=2000",
+    "P=2000, H=1000",
+    "H=2000",
+    "H=2000",
+    "P=4000, H=3000",
+    "P=2000, H=1250",
+    "P=2500, H=1250",
+    "P=2000, H=1000",
+    "P=4000, H=3000",
+    "H=2500",
+    "P=2000, H=500",
+    "P=5000, H=8000",
+    "P=2200, H=N/A",
+    "P=3000, H=N/A"
+]
+
+# Initialize variables
+p_values = []
+h_values = []
+p_percent = []
+h_percent = []
+na_count = 0
+
+# Process data
+for item in data:
+    if item == "N/A":
+        na_count += 1
+        continue
+    
+    # Process percentage values
+    if '%' in item:
+        parts = item.split(', ')
+        for part in parts:
+            if 'P=' in part and '%' in part:
+                val = part.split('=')[1].replace('%','').strip()
+                if '-' in val:
+                    p_range = [float(x) for x in val.split('-')]
+                    p_percent.append(sum(p_range)/len(p_range))
+                else:
+                    p_percent.append(float(val))
+            if 'H=' in part and '%' in part:
+                val = part.split('=')[1].replace('%','').strip()
+                if '-' in val:
+                    h_range = [float(x) for x in val.split('-')]
+                    h_percent.append(sum(h_range)/len(h_range))
+                else:
+                    h_percent.append(float(val))
+    
+    # Process numeric values
+    else:
+        parts = item.split(', ')
+        for part in parts:
+            if 'P=' in part and not '%' in part:
+                val = part.split('=')[1].strip()
+                if val.replace('-','').isdigit():
+                    if '-' in val:
+                        p_range = [float(x) for x in val.split('-')]
+                        p_values.append(sum(p_range)/len(p_range))
+                    else:
+                        p_values.append(float(val))
+            if 'H=' in part and not '%' in part:
+                val = part.split('=')[1].strip()
+                if val.replace('-','').isdigit() and val != "N/A":
+                    if '-' in val:
+                        h_range = [float(x) for x in val.split('-')]
+                        h_values.append(sum(h_range)/len(h_range))
+                    else:
+                        h_values.append(float(val))
+            elif part.startswith('H=') and part.endswith('%'):
+                continue
+            elif part.startswith('H') and not '=' in part and part[1:].replace('-','').isdigit():
+                h_values.append(float(part[1:]))
+
+# Calculate averages
+avg_p_value = sum(p_values)/len(p_values) if p_values else 0
+avg_h_value = sum(h_values)/len(h_values) if h_values else 0
+avg_p_percent = sum(p_percent)/len(p_percent) if p_percent else 0
+avg_h_percent = sum(h_percent)/len(h_percent) if h_percent else 0
+
+# Results
+print("=== NUMERIC PROFIT COMPARISON ===")
+print(f"Powerloom average: ₹{avg_p_value:,.2f}")
+print(f"Handloom average: ₹{avg_h_value:,.2f}")
+print(f"Difference: ₹{avg_h_value-avg_p_value:,.2f} ({((avg_h_value-avg_p_value)/avg_p_value)*100:.1f}% higher)\n")
+
+print("=== PERCENTAGE PROFIT COMPARISON ===")
+print(f"Powerloom average: {avg_p_percent:.1f}%")
+print(f"Handloom average: {avg_h_percent:.1f}%")
+print(f"Difference: {avg_h_percent-avg_p_percent:.1f}% points\n")
+
+print("=== DATA SUMMARY ===")
+print(f"Total entries: {len(data)}")
+print(f"N/A entries: {na_count}")
+print(f"Valid numeric comparisons: {len(p_values)}")
+print(f"Valid percentage comparisons: {len(p_percent)}")
+
+print("\n=== VALUE DISTRIBUTION ===")
+print("Powerloom numeric profits:")
+print(f"Min: ₹{min(p_values) if p_values else 'N/A'}")
+print(f"Max: ₹{max(p_values) if p_values else 'N/A'}")
+print(f"Median: ₹{sorted(p_values)[len(p_values)//2] if p_values else 'N/A'}")
+
+print("\nHandloom numeric profits:")
+print(f"Min: ₹{min(h_values) if h_values else 'N/A'}")
+print(f"Max: ₹{max(h_values) if h_values else 'N/A'}")
+print(f"Median: ₹{sorted(h_values)[len(h_values)//2] if h_values else 'N/A'}")
+
