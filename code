@@ -350,11 +350,7 @@ print(pd.DataFrame({
     'Percentage (%)': education_perc.round(1).values
 }).to_string(index=False))
 
-import pandas as pd
-import matplotlib.pyplot as plt
-from collections import defaultdict
 
-# Set consistent style for all plots
 plt.style.use('seaborn')
 plt.rcParams['figure.facecolor'] = 'white'
 plt.rcParams['axes.grid'] = True
@@ -553,3 +549,117 @@ plt.ylabel('')
 plt.suptitle('Factors Affecting Raw Material Purchase', y=1.05)
 plt.tight_layout()
 plt.show()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ==================== TECHNOLOGY ADOPTION ANALYSIS ====================
+adoption_data = [
+    (0, "50%-75%"), (1, ""), (0, "0%-25%"), (0, ""), (1, ""), (1, ""),
+    (0, "25%-50%"), (0, "25%-50%"), (0, "25%-50%"), (1, ""), (1, ""),
+    (0, "25%-50%"), (1, ""), (0, "25%-50%"), (0, "0%-25%"), (0, "0%-25%"),
+    (0, "0%-25%"), (0, "0%-25%"), (1, ""), (1, ""), (1, ""), (1, ""),
+    (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""),
+    (0, "0%-25%"), (0, "0%-25%"), (0, "25%-50%"), (1, ""), (0, "0%-25%"),
+    (0, "25%-50%"), (0, "25%-50%"), (0, "0%-25%"), (0, "75%-100%"), (0, "50%-75%"),
+    (1, ""), (0, "0%-25%"), (0, "25%-50%"), (0, "75%-100%"), (0, "0%-25%"),
+    (1, ""), (1, ""), (1, ""), (0, "75%-100%"), (1, ""), (0, "0%-25%"),
+    (1, ""), (1, ""), (0, "0%-25%"), (0, "25%-50%"), (0, "0%-25%"), (0, "0%-25%"),
+    (0, "25%-50%"), (1, ""), (0, "0%-25%"), (0, "25%-50%"), (0, "50%-75%"), (0, "0%-25%")
+]
+
+df = pd.DataFrame(adoption_data, columns=['Adoption', 'Level'])
+adoption_counts = df['Adoption'].value_counts()
+level_counts = df[df['Adoption'] == 0]['Level'].value_counts()
+
+print("\nAdoption Summary:")
+print(f"Adopted: {adoption_counts[0]} weavers")
+print(f"Not Adopted: {adoption_counts[1]} weavers")
+print("\nAdoption Levels:")
+print(level_counts)
+
+# ==================== COST CHANGE ANALYSIS ====================
+cost_data = [
+    (0, "increase 10%-20%"), (1, ""), (1, ""), (0, "increase 0%-10%"),
+    (0, "increase 10%-20%"), (0, "increase 0%-10%"), (0, "increase 10%-20%"), (1, ""),
+    (0, "decrease 0%-10%"), (0, "increase 0%-10%"), (1, ""), (0, "decrease 0%-10%"),
+    (0, "increase 0%-10%"), (0, "increase 0%-10%"), (0, "increase 0%-10%"), (0, "increase 0%-10%"), (1, ""),
+    (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""),
+    (0, "increase 0%-10%"), (1, ""), (1, ""), (0, "increase 0%-10%"), (0, "decrease 0%-10%"), (0, "decrease 0%-10%"), (1, ""),
+    (0, "increase 0%-10%"), (0, "increase by 10-20%"), (0, "increase by 10%-20%"), (0, "increase by 10%- 20%"), (1, ""),
+    (0, "increase by 0% - 10%"), (1, ""), (0, "increase by 0%- 10%"), (0, "decrease by 0% - 10%"), (1, ""),
+    (0, "increase by 0% - 10%"), (1, ""), (1, ""), (1, ""), (0, "increase by 10% - 20%"), (1, ""),
+    (0, "increase by 0 - 10%"), (1, ""), (1, ""), (0, "increase by 10%-20%"), (0, "increase by 0% - 10%"),
+    (0, "increase by 10%- 20%"), (0, "decrease by 10% - 20%"), (0, "decrease by 10% - 20%"), (1, ""),
+    (0, "decrease by 10% - 20%"), (0, "increase by 10%- 20%"), (0, "increase by 0%-10%"), (0, "decrease by 0-10%")
+]
+
+df = pd.DataFrame(cost_data, columns=['Response', 'Change'])
+df['Change'] = df['Change'].str.lower().str.strip()
+df['Change'] = df['Change'].str.replace('by ', '').str.replace(' ', '')
+
+adopters = df[df['Response'] == 0]
+change_counts = adopters['Change'].value_counts()
+change_percent = (change_counts / len(adopters) * 100)
+
+print("\nCost Changes Among Adopters:")
+print(change_counts)
+print("\nPercentage Distribution:")
+print(change_percent.round(1))
+
+# ==================== PRODUCTION CHANGE ANALYSIS ====================
+production_data = [
+    1, "N/A", 3, 2, 3, 3, 3, 3, 3, 0, 3, "N/A", 2, 2, 3, 3, 3, 3, 2, "N/A",
+    "N/A", 3, 2, 2, 2, 2, "N/A", 2, 2, "N/A", "N/A", "N/A", "N/A", "N/A", 2,
+    2, 2, 2, 3, 3, 3, 2, 3, "N/A", 3, 3, 2, 3, "N/A", "N/A", "N/A", 3, "N/A",
+    3, "N/A", "N/A", 3, 3, 3, 3, 0, "N/A", 3, 2, 0, 0
+]
+
+df = pd.DataFrame(production_data, columns=['Response'])
+df['Response'] = pd.to_numeric(df['Response'], errors='coerce')
+valid_responses = df.dropna()
+response_counts = valid_responses['Response'].value_counts().sort_index()
+percentages = (response_counts / len(valid_responses)) * 100
+
+categories = {
+    0: "Decreased by 0-10%",
+    1: "Decreased by 11-20%",
+    2: "No significant change",
+    3: "Increased significantly"
+}
+
+print("\nProduction Cost Changes:")
+for code, count in response_counts.items():
+    print(f"{categories[code]}: {count} weavers ({percentages[code]:.1f}%)")
+
+plt.figure(figsize=(10, 6))
+response_counts.plot(kind='bar', color=['green', 'lightgreen', 'gray', 'red'])
+plt.title('Production Cost Changes After Adoption')
+plt.xticks(ticks=range(len(categories)), labels=[categories[i] for i in sorted(categories.keys())], rotation=45)
+plt.tight_layout()
+plt.show()
+
+# ==================== INCOME ANALYSIS ====================
+income_data = [
+    ("H", 6000), ("P", 3500), ("P", 4000), None, None, None, None,
+    ("H", 2000), ("H", 6000), ("H", 6000), ("H", 7000), ("H", 5000), 
+    ("H", 10000), ("H", 5000), ("P", 500), ("H", 5000), ("P", 5000), 
+    ("P", "15% of P"), ("H", 7000), ("P", 5000), ("P", "25% of P"),
+    ("H", 4500), ("H", 4500), ("H", 4500), ("H", 5500), ("P", 3500),
+    None, None, None, ("P", 1000), ("P", 1500), None, None, None, None,
+    ("H", 2000), None, None, None, ("H", 4000), ("P", 2000),
+    None, None, None, None, None, None, None, ("H", 2000),
+    ("H", 2000), ("H", 3000), ("H", 5000), ("H", 6000), ("H", 1500),
+    ("H", 2000), ("H", 3000), ("H", 2000), ("H", 5000), ("H", 2500),
+    ("H", 2000), ("H", 3000), ("H", 2500), ("H", 3000), ("H", 4000),
+    ("P", 2000), ("H", 2000), ("H", 2500), ("H", 5000), ("H", 5000),
+    ("H", 6000), ("H", 6000), ("H", 4000), ("P", 3000), ("H", 2000),
+    ("H", 5000), ("P", 4000), ("H", 2500), ("P", 1000), ("P", 1100),
+    ("P", 1200)
+]
+
+h_values = [item[1] for item in income_data if item is not None and item[0] == "H" and isinstance(item[1], int)]
+p_values = [item[1] for item in income_data if item is not None and item[0] == "P" and isinstance(item[1], int)]
+
+print("\nSorted H Incomes:", sorted(h_values))
+print("\nSorted P Incomes:", sorted(p_values))
