@@ -1342,3 +1342,102 @@ for i, v in enumerate(magnitude_values):
 plt.tight_layout()
 plt.show()
 
+# ==================== ALTERNATIVE INCOME ANALYSIS ====================
+data = [
+    (0, "20%-30%"), (0, 3), 1, 1, 1, "N/A", "N/A", (0, "20%-30%"), 1, 0,
+    "N/A", "N/A", 1, 1, 1, (0, "10%-20%"), (0, "<10%"), (0, "10%-20%"), (0, ">30%"), "N/A",
+    "N/A", "N/A", "N/A", "N/A", 1, 1, 1, "N/A", "N/A", 1,
+    (0, "10%-20%"), (0, "<10%"), (0, "10%-20%"), (0, "10%-20%"), (0, "<10%"), (0, "20%-30%"), "N/A", 1, (0, ">30%"), 1,
+    (0, "20%-30%"), (0, "<10%"), (0, "20%-30%"), 1, 1, 1, 1, 1, (0, "10%-20%"), 1,
+    "N/A", 1, (0, ">30%"), (0, "10%-20%"), 1, "N/A", (0, "<10%"), 1, 1, 1,
+    (0, ">30%"), 1, (0, "<10%"), 1, 1, 1
+]
+
+# Initialize counters
+income_counts = {
+    "Has Other Income": 0,
+    "No Other Income": 0,
+    "N/A": 0
+}
+
+income_ranges = {
+    "<10%": 0,
+    "10%-20%": 0,
+    "20%-30%": 0,
+    ">30%": 0
+}
+
+# Process data
+for item in data:
+    if isinstance(item, tuple):  # Cases with percentage (0, "20%-30%")
+        income_counts["Has Other Income"] += 1
+        if isinstance(item[1], int):  # Handle (0, 3) case
+            income_ranges[">30%"] += 1
+        else:
+            range_key = item[1]
+            income_ranges[range_key] += 1
+    elif item == 0:
+        income_counts["Has Other Income"] += 1
+        income_ranges["<10%"] += 1  # Default to <10% if no range specified
+    elif item == 1:
+        income_counts["No Other Income"] += 1
+    else:
+        income_counts["N/A"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+valid_responses = total_responses - income_counts["N/A"]
+has_income_percent = (income_counts["Has Other Income"] / valid_responses) * 100
+no_income_percent = (income_counts["No Other Income"] / valid_responses) * 100
+
+# Calculate income distribution percentages
+total_with_income = income_counts["Has Other Income"]
+income_distribution = {k: (v / total_with_income) * 100 for k, v in income_ranges.items()}
+
+# Results
+print("=== ALTERNATIVE INCOME SOURCES ===")
+print(f"Weavers with other income: {income_counts['Has Other Income']} ({has_income_percent:.1f}%)")
+print(f"Weavers without other income: {income_counts['No Other Income']} ({no_income_percent:.1f}%)")
+print(f"Missing data: {income_counts['N/A']} cases")
+
+print("\n=== INCOME DISTRIBUTION (AMONG THOSE WITH OTHER INCOME) ===")
+for range, count in income_ranges.items():
+    print(f"{range} of income: {count} cases ({income_distribution[range]:.1f}%)")
+
+print("\n=== KEY FINDINGS ===")
+print(f"1. {has_income_percent:.1f}% of weavers have supplemental income sources")
+print(f"2. Most common supplemental income range: 10%-20% of total income")
+print(f"3. {income_ranges['>30%']} cases rely significantly (>30%) on non-weaving income")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15, 5))
+
+# Chart 1: Income Source Presence
+plt.subplot(1, 2, 1)
+presence_labels = ['Has Other Income', 'No Other Income']
+presence_values = [income_counts['Has Other Income'], income_counts['No Other Income']]
+presence_colors = ['#4CAF50', '#F44336']
+bars = plt.bar(presence_labels, presence_values, color=presence_colors)
+plt.title('Presence of Alternative Income Sources')
+plt.ylabel('Number of Weavers')
+for bar in bars:
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height,
+            f'{height}\n({height/valid_responses*100:.1f}%)',
+            ha='center', va='bottom')
+
+# Chart 2: Income Range Distribution
+plt.subplot(1, 2, 2)
+range_labels = list(income_ranges.keys())
+range_values = list(income_ranges.values())
+range_colors = ['#FFD700', '#FFA500', '#FF8C00', '#FF4500']
+plt.bar(range_labels, range_values, color=range_colors)
+plt.title('Alternative Income Contribution Ranges')
+plt.ylabel('Number of Weavers')
+for i, v in enumerate(range_values):
+    plt.text(i, v, f"{v}\n({income_distribution[range_labels[i]]:.1f}%)", ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
