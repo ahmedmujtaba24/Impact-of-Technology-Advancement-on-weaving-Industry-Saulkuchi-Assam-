@@ -663,3 +663,54 @@ p_values = [item[1] for item in income_data if item is not None and item[0] == "
 
 print("\nSorted H Incomes:", sorted(h_values))
 print("\nSorted P Incomes:", sorted(p_values))
+
+# ==================== PROFIT MARGIN ANALYSIS ==================== 
+profit_data = [
+    20, "15%-25%", "N/A", "N/A", "N/A", "₹ 300.00", "N/A", "N/A", "N/A", 2000,
+    "N/A", "N/A", "N/A", "N/A", "50%", "25%", 2000, 2000, 2000, 2000,
+    "N/A", "N/A", "N/A", 7500, 250, 400, "N/A", "5%", 2500, "N/A",
+    2000, ">400", "10%", 250, 550, 550, ">400", 2000, 2000, 1500,
+    2500, 3000, 2000, "N/A", "N/A", 200, 4000, 2500, 400, "N/A",
+    "N/A", 3000, "N/A", 2000, "N/A", "N/A", 4000, 2500, 2500, 2000,
+    4000, "N/A", 2000, 5000, 2200, 3000
+]
+
+# Process data
+numeric_values = []
+percentage_values = []
+
+for item in profit_data:
+    if isinstance(item, int):
+        numeric_values.append(item)
+    elif isinstance(item, str):
+        if item.endswith('%'):
+            percentage_values.append(float(item.replace('%', '')))
+        elif item.replace('.', '').isdigit():
+            numeric_values.append(float(item))
+        elif item.startswith('₹'):
+            numeric_values.append(float(item.replace('₹', '').strip()))
+        elif item.startswith('>'):
+            numeric_values.append(float(item.replace('>', '')))
+
+# Calculate averages
+avg_numeric = sum(numeric_values) / len(numeric_values) if numeric_values else 0
+avg_percentage = sum(percentage_values) / len(percentage_values) if percentage_values else 0
+
+# Results
+print(f"Average numeric profit: ₹{avg_numeric:,.2f}")
+print(f"Average percentage profit: {avg_percentage:.1f}%")
+print(f"\nTotal valid numeric entries: {len(numeric_values)}")
+print(f"Total valid percentage entries: {len(percentage_values)}")
+print(f"Total N/A entries: {profit_data.count('N/A')}")
+
+# Data distribution
+print("\nNumeric Profit Distribution:")
+print(f"Minimum: ₹{min(numeric_values)}")
+print(f"Maximum: ₹{max(numeric_values)}")
+print(f"Median: ₹{sorted(numeric_values)[len(numeric_values)//2]}")
+
+print("\nPercentage Profit Distribution:")
+print(f"Minimum: {min(percentage_values)}%")
+print(f"Maximum: {max(percentage_values)}%")
+print(f"Median: {sorted(percentage_values)[len(percentage_values)//2]}%")
+
