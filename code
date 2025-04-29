@@ -937,3 +937,147 @@ plt.title('Productivity Improvement After Technology Adoption')
 plt.xlabel('Improvement Range')
 plt.ylabel('Number of Cases')
 plt.show()
+
+# ==================== INCOME CHANGE ANALYSIS ====================
+data = [
+    (0, 1), (1, ""), (0, 0), (0, 1), (0, 1), (0, 1), (1, ""), (1, ""),
+    (0, 2), (0, 0), (1, ""), (0, 2), (0, 0), (0, 0), (0, 0), (0, 0), (1, ""),
+    (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""), (1, ""),
+    (0, 0), (1, ""), (1, ""), (0, 0), (0, 2), (0, 2), (1, ""), (0, 0), (0, 1), (0, 1),
+    (0, 1), (1, ""), (0, 0), (0, 2), (1, ""), (0, 0), (1, ""), (1, ""), (1, ""), (0, 1),
+    (1, ""), (0, 0), (1, ""), (1, ""), (0, 1), (0, 0), (0, 1), (0, 3), (0, 3), (1, ""),
+    (0, 3), (0, 1), (0, 0), (0, 2)
+]
+
+# Initialize counters
+response_counts = {
+    "Yes": 0,
+    "No": 0
+}
+
+change_counts = {
+    "Increased 0-5%": 0,
+    "Increased 5-10%": 0,
+    "Decreased 0-5%": 0,
+    "Decreased 5-10%": 0
+}
+
+# Process data
+for response, change in data:
+    if response == 0:
+        response_counts["Yes"] += 1
+        if change == 0:
+            change_counts["Increased 0-5%"] += 1
+        elif change == 1:
+            change_counts["Increased 5-10%"] += 1
+        elif change == 2:
+            change_counts["Decreased 0-5%"] += 1
+        elif change == 3:
+            change_counts["Decreased 5-10%"] += 1
+    else:
+        response_counts["No"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+yes_percent = (response_counts["Yes"] / total_responses) * 100
+no_percent = (response_counts["No"] / total_responses) * 100
+
+if response_counts["Yes"] > 0:
+    change_percent = {k: (v / response_counts["Yes"]) * 100 for k, v in change_counts.items()}
+
+# Results
+print("=== INCOME CHANGE SUMMARY ===")
+print(f"Reported income changes: {response_counts['Yes']} weavers ({yes_percent:.1f}%)")
+print(f"No reported changes: {response_counts['No']} weavers ({no_percent:.1f}%)")
+
+print("\n=== CHANGE DISTRIBUTION (AMONG RESPONDENTS WHO REPORTED CHANGES) ===")
+for change, count in change_counts.items():
+    print(f"{change}: {count} weavers ({change_percent[change]:.1f}%)")
+
+print("\n=== KEY FINDINGS ===")
+print(f"Net positive changes: {change_counts['Increased 0-5%'] + change_counts['Increased 5-10%']} weavers")
+print(f"Net negative changes: {change_counts['Decreased 0-5%'] + change_counts['Decreased 5-10%']} weavers")
+print(f"Most common outcome: Increased 0-5% ({change_counts['Increased 0-5%']} cases)")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+# Response distribution
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+response_labels = ['Reported Changes', 'No Changes']
+response_values = [response_counts['Yes'], response_counts['No']]
+plt.pie(response_values, labels=response_labels, autopct='%1.1f%%', colors=['lightblue', 'lightgray'])
+plt.title('Income Change Reporting')
+
+# Change distribution
+plt.subplot(1, 2, 2)
+change_labels = ['+0-5%', '+5-10%', '-0-5%', '-5-10%']
+change_values = list(change_counts.values())
+plt.bar(change_labels, change_values, color=['green', 'darkgreen', 'red', 'darkred'])
+plt.title('Reported Income Changes')
+plt.ylabel('Number of Weavers')
+
+plt.tight_layout()
+plt.show()
+
+# ==================== STAFF TRAINING ANALYSIS ====================
+data = [
+    0, 1, 0, 1, 1, 0, "N/A", 1, 1, 1,
+    "N/A", "N/A", 0, 1, 1, 1, 0, 1, "N/A", "N/A",
+    "N/A", "N/A", "N/A", 0, 1, 1, 1, "N/A", "N/A", 0,
+    1, 0, 1, 0, 1, 1, 0, 1, "N/A", 1,
+    0, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+    0, "N/A", 1, 0, 1, 0, 1, "N/A", 0, 1,
+    0, "N/A", 1, 0, 1, 1
+]
+
+# Initialize counters
+training_counts = {
+    "Yes": 0,
+    "No": 0,
+    "N/A": 0
+}
+
+# Process data
+for response in data:
+    if response == 0:
+        training_counts["Yes"] += 1
+    elif response == 1:
+        training_counts["No"] += 1
+    else:
+        training_counts["N/A"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+valid_responses = total_responses - training_counts["N/A"]
+yes_percent = (training_counts["Yes"] / valid_responses) * 100
+no_percent = (training_counts["No"] / valid_responses) * 100
+
+# Results
+print("=== STAFF TRAINING PROVISION ===")
+print(f"Provided training: {training_counts['Yes']} weavers ({yes_percent:.1f}%)")
+print(f"Did not provide training: {training_counts['No']} weavers ({no_percent:.1f}%)")
+print(f"Missing data: {training_counts['N/A']} cases")
+
+print("\n=== KEY FINDINGS ===")
+print(f"1. Training was provided in {training_counts['Yes']} out of {valid_responses} valid cases")
+print(f"2. {no_percent:.1f}% of weavers did not train their existing staff")
+print(f"3. Training provision rate: {yes_percent:.1f}%")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+# Filter out N/A for visualization
+labels = ['Provided Training', 'No Training']
+values = [training_counts['Yes'], training_counts['No']]
+colors = ['#4CAF50', '#F44336']
+
+plt.figure(figsize=(8, 6))
+plt.bar(labels, values, color=colors)
+plt.title('Staff Training Provision After Technology Implementation')
+plt.ylabel('Number of Weavers')
+plt.text(0, values[0], f"{values[0]} ({yes_percent:.1f}%)", ha='center', va='bottom')
+plt.text(1, values[1], f"{values[1]} ({no_percent:.1f}%)", ha='center', va='bottom')
+plt.show()
