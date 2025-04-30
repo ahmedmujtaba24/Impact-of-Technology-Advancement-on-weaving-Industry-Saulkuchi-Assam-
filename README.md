@@ -36,6 +36,13 @@ The version in this repository reflects the refined model that incorporated addi
   All Python scripts for data analysis and visualizations.  
   _(Includes scripts for data cleaning, analysis, and plotting graphs.)_
 
+- [**Statistical Methods/**]()
+  Implementation of Statsitical methods to do a detailed scientific analysis of the given scenario, To understand what are the pattern of what drives pospirety and stability to the region
+
+  Methods used:
+  Co-Relation Anlysis
+  Regression Analsysis 
+
 
 - **Report/**  
   Final findings and detailed insights.  
