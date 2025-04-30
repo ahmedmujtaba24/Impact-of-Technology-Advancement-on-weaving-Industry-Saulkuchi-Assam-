@@ -2279,3 +2279,92 @@ df = df.sort_index()
 
 print(df)
 
+# ==================== GOVERNMENT SUPPORT ON ADOPTING TECHNOLOGY ====================
+
+raw_data = [
+    "1", "0", "0", "1", "3", "0", "0", "0", "0", "1", "0", "0", "0", "0", "0", "N/A", "0",
+    "0", "0", "0", "0", "0", "0", "0", "0", "0", "N/A", "N/A", "1", "1", "1", "0", "2",
+    "0, 1, 2", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
+    "0", "0", "1", "0", "1", "0", "0", "0", "0", "0", "0", "1", "0", "0"
+]
+
+# Clean and process data
+cleaned = [entry.strip() for entry in raw_data if entry != "N/A"]
+all_choices = [int(item) for entry in cleaned for item in entry.split(',') if item.isdigit()]
+
+# Count frequency
+counts = Counter(all_choices)
+total_responses = len(cleaned)
+
+# Convert to DataFrame for display
+df = pd.DataFrame.from_dict(counts, orient='index', columns=['Count'])
+df.index.name = 'Response'
+df['Percentage'] = (df['Count'] / total_responses) * 100
+df = df.sort_index()
+
+print(df)
+
+
+# ==================== WILLINGNESS ON IMLIMENTATION OF TECHNOLOGY ON WEAVING METHODS ====================
+
+import pandas as pd
+from collections import Counter
+
+# Raw data input
+raw_data = [
+    "0", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "0", "0", "0", "0",
+    "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "0", "0", "0", "0", "0",
+    "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
+    "0", "0", "0", "0", "1", "0", "1", "0", "0", "0", "0", "0", "1", "2", "0"
+]
+
+# Clean and process data
+cleaned = [entry.strip() for entry in raw_data if entry != "N/A"]
+all_choices = [int(item) for entry in cleaned for item in entry.split(',') if item.isdigit()]
+
+# Count frequency
+counts = Counter(all_choices)
+total_responses = len(cleaned)
+
+# Convert to DataFrame for display
+df = pd.DataFrame.from_dict(counts, orient='index', columns=['Count'])
+df.index.name = 'Response'
+df['Percentage'] = (df['Count'] / total_responses) * 100
+df = df.sort_index()
+
+print(df)
+
+# Raw data input
+raw_data = [
+    "Subsidy on raw materials or tax", "Subsidy", "N/A", "Subsidy, tax exemptions", "Reduction in Cost", "N/A",
+    "Capital support, Subsidy", "Implementation of CAD", "Implementation of CAD", "Implementation of CAD", "N/A",
+    "Subsidy on raw materials or technology", "N/A", "N/A", "Financial aid on skill and technology development", "N/A",
+    "Subsidy on tax or technology", "Subsidy", "Subsidy, tax exemptions", "Tax subsidy",
+    "Subsidy on raw materials or technology", "Subsidy on raw materials or technology",
+    "Subsidy on raw materials or technology", "N/A", "Subsidy on raw materials or tax", "Subsidy", "N/A", "N/A", "N/A",
+    "N/A", "Subsidy on raw materials or tax", "Access to broader market", "Investment allocation", "N/A",
+    "Subsidy on raw materials", "N/A", "Financial aid on skill and tax exemptions", "Safeguarding cultural interests",
+    "Safeguarding cultural interests", "Good market exposure", "Government Fund",
+    "Government support to increase production", "Reduce cost of raw materials", "Finance for investment",
+    "High production will lead to economies of scale", "Good market exposure", "Financial support",
+    "Good quality materials and designs", "Adapting technology and machinery", "Reduce cost of raw materials",
+    "Market exposure", "Time management", "Proper time management", "Financial support", "Good time management",
+    "Government support to increase production", "Market exposure", "Market exposure", "Reduce cost of raw materials",
+    "Government support to increase production", "Financial support", "Good market exposure",
+    "High production will lead to economies of scale", "Finance for investment", "Reduce cost of raw materials",
+    "Government support to increase production"
+]
+
+# Clean and split
+cleaned = [entry for entry in raw_data if entry != "N/A"]
+all_items = [item.strip() for entry in cleaned for item in entry.split(',')]
+
+# Count frequency
+counts = Counter(all_items)
+
+# Convert to DataFrame
+df = pd.DataFrame.from_dict(counts, orient='index', columns=['Count'])
+df.index.name = 'Step'
+df = df.sort_values(by='Count', ascending=False)
+
+print(df)
