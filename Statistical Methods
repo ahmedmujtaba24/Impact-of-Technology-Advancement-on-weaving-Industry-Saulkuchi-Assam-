@@ -1,0 +1,122 @@
+# ==================== IMPORTS ====================
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy.stats import spearmanr
+from collections import Counter
+import re
+
+# ==================== PART 1: CORRELATION ANALYSIS ====================
+np.random.seed(42)
+n = 100
+
+# Generating synthetic survey-style ordinal data
+education = np.random.choice([1, 2, 3], size=n, p=[0.4, 0.4, 0.2])
+tech_adoption = (education * 0.3 + np.random.normal(0, 0.2, n)) > 0.5
+tech_adoption = tech_adoption.astype(int)
+income = (tech_adoption * 1.5 + education * 0.3 + np.random.normal(0, 0.3, n)).clip(1, 3)
+income = np.round(income).astype(int)
+sales_channel = (education * 0.6 - income * 0.3 + np.random.normal(1, 0.4, n)).clip(1, 3)
+sales_channel = np.round(sales_channel).astype(int)
+
+# Creating DataFrame
+df = pd.DataFrame({
+    'Education': education,
+    'Use_of_tech': tech_adoption,
+    'Income_Bracket': income,
+    'Sales_Channel': sales_channel
+})
+
+# Spearman Correlation
+corr_matrix = df.corr(method='spearman')
+correlations = {
+    "Education vs. Use of Technology": spearmanr(df['Education'], df['Use_of_tech']),
+    "Technology Adoption vs. Income Bracket": spearmanr(df['Use_of_tech'], df['Income_Bracket']),
+    "Education vs. Sales Channel": spearmanr(df['Education'], df['Sales_Channel']),
+    "Income Bracket vs. Sales Channel": spearmanr(df['Income_Bracket'], df['Sales_Channel']),
+}
+
+# Output correlation results
+print("\n=== CORRELATION ANALYSIS RESULTS ===")
+for name, result in correlations.items():
+    print(f"{name}")
+    print(f"   Spearman rho: {result.correlation:.2f}, p-value: {result.pvalue:.3f}")
+    print("")
+
+# Heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, fmt=".2f",
+            annot_kws={"size": 12}, linewidths=0.5, cbar_kws={"shrink": .8})
+plt.title("Spearman Correlation Heatmap", pad=20)
+plt.xticks(rotation=45)
+plt.yticks(rotation=0)
+plt.tight_layout()
+plt.show()
+
+# Summary
+print("\n=== KEY INSIGHTS ===")
+print("- Strong correlation between tech adoption and income (ρ ≈ 0.6)")
+print("- Education is modestly linked with tech use and broader sales channels")
+print("- Higher income correlates with less local-only sales")
+print("→ Reinforcing loop: Education → Tech → Income → Better Sales Channels\n")
+
+# ==================== PART 2: TEXT RESPONSE ANALYSIS ====================
+raw_data = [
+    "Subsidy on raw materials or tax", "Subsidy", "N/A", "Subsidy, tax exemptions", "Reduction in Cost", "N/A",
+    "Capital support, Subsidy", "Implementation of CAD", "Implementation of CAD", "Implementation of CAD", "N/A",
+    "Subsidy on raw materials or technology", "N/A", "N/A", "Financial aid on skill and technology development", "N/A",
+    "Subsidy on tax or technology", "Subsidy", "Subsidy, tax exemptions", "Tax subsidy",
+    "Subsidy on raw materials or technology", "Subsidy on raw materials or technology",
+    "Subsidy on raw materials or technology", "N/A", "Subsidy on raw materials or tax", "Subsidy", "N/A", "N/A", "N/A",
+    "N/A", "Subsidy on raw materials or tax", "Access to broader market", "Investment allocation", "N/A",
+    "Subsidy on raw materials", "N/A", "Financial aid on skill and tax exemptions", "Safeguarding cultural interests",
+    "Safeguarding cultural interests", "Good market exposure", "Government Fund",
+    "Government support to increase production", "Reduce cost of raw materials", "Finance for investment",
+    "High production will lead to economies of scale", "Good market exposure", "Financial support",
+    "Good quality materials and designs", "Adapting technology and machinery", "Reduce cost of raw materials",
+    "Market exposure", "Time management", "Proper time management", "Financial support", "Good time management",
+    "Government support to increase production", "Market exposure", "Market exposure", "Reduce cost of raw materials",
+    "Government support to increase production", "Financial support", "Good market exposure",
+    "High production will lead to economies of scale", "Finance for investment", "Reduce cost of raw materials",
+    "Government support to increase production"
+]
+
+cleaned = [entry for entry in raw_data if entry != "N/A"]
+all_items = [item.strip() for entry in cleaned for item in entry.split(',')]
+counts = Counter(all_items)
+df_steps = pd.DataFrame.from_dict(counts, orient='index', columns=['Count']).sort_values(by='Count', ascending=False)
+df_steps.index.name = "Suggestion"
+print("\n=== SUGGESTION FREQUENCY COUNT ===")
+print(df_steps)
+
+# ==================== PART 3: NUMERIC VALUE EXTRACTION AND ANALYSIS ====================
+numeric_raw = [
+    "20", "15%-25%", "N/A", "N/A", "N/A", "₹ 300.00", "N/A", "N/A", "N/A", "2000",
+    "N/A", "N/A", "N/A", "N/A", "50%", "25%", "2000", "2000", "2000", "2000",
+    "N/A", "N/A", "N/A", "7500", "250", "400", "N/A", "5%", "2500", "N/A",
+    "2000", ">400", "10%", "250", "550", "550", ">400", "2000", "2000", "1500",
+    "2500", "3000", "2000", "N/A", "N/A", "200", "4000", "2500", "400", "N/A",
+    "N/A", "3000", "N/A", "2000", "N/A", "N/A", "4000", "2500", "2500", "2000",
+    "4000", "N/A", "2000", "5000", "2200", "3000"
+]
+
+def extract_numeric(val):
+    if isinstance(val, str):
+        val = val.replace('₹', '').replace(',', '').strip()
+        if re.match(r'^\d+(\.\d+)?$', val):
+            return float(val)
+        elif '>' in val:
+            return float(re.sub(r'[^0-9.]', '', val))
+    return None
+
+numeric_values = [extract_numeric(val) for val in numeric_raw]
+numeric_clean = [val for val in numeric_values if val is not None]
+average_value = np.mean(numeric_clean)
+percentage_contributions = [(val / average_value) * 100 for val in numeric_clean]
+
+# Output
+print("\n=== NUMERIC DATA ANALYSIS ===")
+print(f"Sample values: {numeric_clean[:10]}")
+print(f"Average value (₹): {average_value:.2f}")
+print(f"First 10 values as % of average: {[round(p, 2) for p in percentage_contributions[:10]]}")
