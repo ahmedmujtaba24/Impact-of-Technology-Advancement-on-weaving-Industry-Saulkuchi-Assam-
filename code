@@ -2063,7 +2063,6 @@ bars = plt.bar(labels, values, color=colors)
 plt.title('Younger Generation Weaving Technology Preferences')
 plt.ylabel('Number of Respondents')
 
-# Add value labels
 for bar in bars:
     height = bar.get_height()
     plt.text(bar.get_x() + bar.get_width()/2., height,
@@ -2083,7 +2082,6 @@ data = [
     2, 0, 0, 0, 0, 0
 ]
 
-# Initialize counters
 response_counts = {
     "Yes - Necessary": 0,    # 0
     "No - Not Necessary": 0, # 1
@@ -2091,7 +2089,6 @@ response_counts = {
     "N/A": 0
 }
 
-# Count responses
 for response in data:
     if response == 0:
         response_counts["Yes - Necessary"] += 1
@@ -2102,12 +2099,10 @@ for response in data:
     else:
         response_counts["N/A"] += 1
 
-# Calculate percentages
 total_responses = len(data)
 valid_responses = total_responses - response_counts["N/A"]
 percentages = {k: (v / valid_responses) * 100 for k, v in response_counts.items() if k != "N/A"}
 
-# Results
 print("=== TRADITIONAL WEAVING PRESERVATION NEED ===")
 print(f"Believe preservation is necessary: {response_counts['Yes - Necessary']} cases ({percentages['Yes - Necessary']:.1f}%)")
 print(f"Believe preservation is not necessary: {response_counts['No - Not Necessary']} cases ({percentages['No - Not Necessary']:.1f}%)")
@@ -2133,7 +2128,6 @@ bars = plt.bar(labels, values, color=colors)
 plt.title('Need to Preserve Traditional Weaving Methods')
 plt.ylabel('Number of Respondents')
 
-# Add value labels
 for bar in bars:
     height = bar.get_height()
     plt.text(bar.get_x() + bar.get_width()/2., height,
@@ -2153,7 +2147,6 @@ data = [
     0, 0, 1, 0, 0, 1
 ]
 
-# Initialize counters
 challenge_counts = {
     "Lack of Funds": 0,          # 0
     "Technical Knowledge Gap": 0, # 1
@@ -2163,7 +2156,6 @@ challenge_counts = {
     "N/A": 0
 }
 
-# Process data
 for item in data:
     if isinstance(item, int):  # Single challenge
         if item == 0:
@@ -2179,12 +2171,10 @@ for item in data:
     else:  # N/A
         challenge_counts["N/A"] += 1
 
-# Calculate percentages
 total_responses = len(data)
 valid_responses = total_responses - challenge_counts["N/A"]
 percentages = {k: (v / valid_responses) * 100 for k, v in challenge_counts.items() if k != "N/A"}
 
-# Results
 print("=== TECHNOLOGY ADOPTION CHALLENGES ===")
 print(f"Lack of sufficient funds: {challenge_counts['Lack of Funds']} cases ({percentages['Lack of Funds']:.1f}%)")
 print(f"Lack of technical knowledge: {challenge_counts['Technical Knowledge Gap']} cases ({percentages['Technical Knowledge Gap']:.1f}%)")
@@ -2199,10 +2189,8 @@ print(f"2. Technical knowledge gap affects {challenge_counts['Technical Knowledg
 print(f"3. Cultural resistance appears in {challenge_counts['Resistance from Weavers']} cases")
 print(f"4. {challenge_counts['Multiple Challenges']} respondents face multiple simultaneous challenges")
 
-# Visualization
 import matplotlib.pyplot as plt
 
-# Prepare data for visualization (counting multiple challenges separately)
 detailed_counts = {
     "Funds": 0,
     "Knowledge": 0,
@@ -2240,7 +2228,6 @@ bars = plt.bar(labels, values, color=colors)
 plt.title('Challenges in Adopting New Weaving Technology')
 plt.ylabel('Number of Mentions')
 
-# Add value labels
 for bar in bars:
     height = bar.get_height()
     plt.text(bar.get_x() + bar.get_width()/2., height,
@@ -2254,7 +2241,6 @@ plt.show()
 import pandas as pd
 from collections import Counter
 
-# Raw data input
 raw_data = [
     "1", "0", "2", "1, 3", "1", "1", "0", "1", "1", "1", "0", "1", "1", "1, 2", "1, 2",
     "0", "0, 2", "0, 1", "0, 1", "0, 1", "0, 1", "1, 2", "1, 2", "N/A", "1", "N/A", "N/A",
@@ -2263,15 +2249,12 @@ raw_data = [
     "1", "3", "3", "1", "1", "2", "1", "1"
 ]
 
-# Clean and process data
 cleaned = [entry.strip() for entry in raw_data if entry != "N/A"]
 all_choices = [int(item) for entry in cleaned for item in entry.split(',')]
 
-# Count frequency
 counts = Counter(all_choices)
 total_responses = len(cleaned)
 
-# Convert to DataFrame for display
 df = pd.DataFrame.from_dict(counts, orient='index', columns=['Count'])
 df.index.name = 'Support Type'
 df['Percentage'] = (df['Count'] / total_responses) * 100
@@ -2288,15 +2271,12 @@ raw_data = [
     "0", "0", "1", "0", "1", "0", "0", "0", "0", "0", "0", "1", "0", "0"
 ]
 
-# Clean and process data
 cleaned = [entry.strip() for entry in raw_data if entry != "N/A"]
 all_choices = [int(item) for entry in cleaned for item in entry.split(',') if item.isdigit()]
 
-# Count frequency
 counts = Counter(all_choices)
 total_responses = len(cleaned)
 
-# Convert to DataFrame for display
 df = pd.DataFrame.from_dict(counts, orient='index', columns=['Count'])
 df.index.name = 'Response'
 df['Percentage'] = (df['Count'] / total_responses) * 100
@@ -2310,7 +2290,6 @@ print(df)
 import pandas as pd
 from collections import Counter
 
-# Raw data input
 raw_data = [
     "0", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "0", "0", "0", "0",
     "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "0", "0", "0", "0", "0",
@@ -2318,15 +2297,12 @@ raw_data = [
     "0", "0", "0", "0", "1", "0", "1", "0", "0", "0", "0", "0", "1", "2", "0"
 ]
 
-# Clean and process data
 cleaned = [entry.strip() for entry in raw_data if entry != "N/A"]
 all_choices = [int(item) for entry in cleaned for item in entry.split(',') if item.isdigit()]
 
-# Count frequency
 counts = Counter(all_choices)
 total_responses = len(cleaned)
 
-# Convert to DataFrame for display
 df = pd.DataFrame.from_dict(counts, orient='index', columns=['Count'])
 df.index.name = 'Response'
 df['Percentage'] = (df['Count'] / total_responses) * 100
@@ -2334,7 +2310,6 @@ df = df.sort_index()
 
 print(df)
 
-# Raw data input
 raw_data = [
     "Subsidy on raw materials or tax", "Subsidy", "N/A", "Subsidy, tax exemptions", "Reduction in Cost", "N/A",
     "Capital support, Subsidy", "Implementation of CAD", "Implementation of CAD", "Implementation of CAD", "N/A",
@@ -2355,14 +2330,11 @@ raw_data = [
     "Government support to increase production"
 ]
 
-# Clean and split
 cleaned = [entry for entry in raw_data if entry != "N/A"]
 all_items = [item.strip() for entry in cleaned for item in entry.split(',')]
 
-# Count frequency
 counts = Counter(all_items)
 
-# Convert to DataFrame
 df = pd.DataFrame.from_dict(counts, orient='index', columns=['Count'])
 df.index.name = 'Step'
 df = df.sort_values(by='Count', ascending=False)
