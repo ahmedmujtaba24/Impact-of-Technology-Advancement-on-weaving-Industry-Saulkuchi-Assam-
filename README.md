@@ -40,8 +40,7 @@ The version in this repository reflects the refined model that incorporated addi
   Implementation of Statsitical methods to do a detailed scientific analysis of the given scenario, To understand what are the pattern of what drives pospirety and stability to the region
 
   Methods used:
-  Co-Relation Anlysis
-  Regression Analsysis 
+  Co-Relation Anlysis & Regression Analsysis 
 
 
 - **Report/**  
