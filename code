@@ -2141,3 +2141,110 @@ for bar in bars:
 
 plt.show()
 
+# ==================== TECHNOLOGY ADOPTION CHALLENGES ANALYSIS ====================
+data = [
+    2, 1, 0, 1, 1, 0, "N/A", 0, 0, 1,
+    0, (0, 1), 0, 1, 0, 1, 1, 2, 2, 2,
+    2, (0, 1), (0, 1), "N/A", 1, "N/A", "N/A", "N/A", (0, 1), "N/A",
+    "N/A", (0, 1, 2), "N/A", "N/A", 0, (0, 1), (0, 1), 2, 2, 0,
+    1, 1, 1, 2, 0, 0, 1, 0, 0, 1,
+    1, 0, 0, 0, 0, 2, 2, 0, 0, 2,
+    0, 0, 1, 0, 0, 1
+]
+
+# Initialize counters
+challenge_counts = {
+    "Lack of Funds": 0,          # 0
+    "Technical Knowledge Gap": 0, # 1
+    "Resistance from Weavers": 0, # 2
+    "Other Challenges": 0,        # 3
+    "Multiple Challenges": 0,     # For combined responses
+    "N/A": 0
+}
+
+# Process data
+for item in data:
+    if isinstance(item, int):  # Single challenge
+        if item == 0:
+            challenge_counts["Lack of Funds"] += 1
+        elif item == 1:
+            challenge_counts["Technical Knowledge Gap"] += 1
+        elif item == 2:
+            challenge_counts["Resistance from Weavers"] += 1
+        elif item == 3:
+            challenge_counts["Other Challenges"] += 1
+    elif isinstance(item, tuple):  # Multiple challenges
+        challenge_counts["Multiple Challenges"] += 1
+    else:  # N/A
+        challenge_counts["N/A"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+valid_responses = total_responses - challenge_counts["N/A"]
+percentages = {k: (v / valid_responses) * 100 for k, v in challenge_counts.items() if k != "N/A"}
+
+# Results
+print("=== TECHNOLOGY ADOPTION CHALLENGES ===")
+print(f"Lack of sufficient funds: {challenge_counts['Lack of Funds']} cases ({percentages['Lack of Funds']:.1f}%)")
+print(f"Lack of technical knowledge: {challenge_counts['Technical Knowledge Gap']} cases ({percentages['Technical Knowledge Gap']:.1f}%)")
+print(f"Resistance from traditional weavers: {challenge_counts['Resistance from Weavers']} cases ({percentages['Resistance from Weavers']:.1f}%)")
+print(f"Other challenges: {challenge_counts['Other Challenges']} cases ({percentages['Other Challenges']:.1f}%)")
+print(f"Multiple challenges reported: {challenge_counts['Multiple Challenges']} cases ({percentages['Multiple Challenges']:.1f}%)")
+print(f"Missing data: {challenge_counts['N/A']} cases")
+
+print("\n=== KEY FINDINGS ===")
+print(f"1. Financial constraints are the most common challenge (appearing in {challenge_counts['Lack of Funds'] + challenge_counts['Multiple Challenges']} cases)")
+print(f"2. Technical knowledge gap affects {challenge_counts['Technical Knowledge Gap'] + challenge_counts['Multiple Challenges']} cases")
+print(f"3. Cultural resistance appears in {challenge_counts['Resistance from Weavers']} cases")
+print(f"4. {challenge_counts['Multiple Challenges']} respondents face multiple simultaneous challenges")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+# Prepare data for visualization (counting multiple challenges separately)
+detailed_counts = {
+    "Funds": 0,
+    "Knowledge": 0,
+    "Resistance": 0,
+    "Other": 0
+}
+
+for item in data:
+    if isinstance(item, int):
+        if item == 0:
+            detailed_counts["Funds"] += 1
+        elif item == 1:
+            detailed_counts["Knowledge"] += 1
+        elif item == 2:
+            detailed_counts["Resistance"] += 1
+        elif item == 3:
+            detailed_counts["Other"] += 1
+    elif isinstance(item, tuple):
+        if 0 in item:
+            detailed_counts["Funds"] += 1
+        if 1 in item:
+            detailed_counts["Knowledge"] += 1
+        if 2 in item:
+            detailed_counts["Resistance"] += 1
+        if 3 in item:
+            detailed_counts["Other"] += 1
+
+labels = ['Lack of Funds', 'Technical Knowledge', 'Resistance', 'Other']
+values = [detailed_counts["Funds"], detailed_counts["Knowledge"], 
+          detailed_counts["Resistance"], detailed_counts["Other"]]
+colors = ['#FF6B6B', '#4ECDC4', '#FFBE0B', '#888888']
+
+plt.figure(figsize=(10, 6))
+bars = plt.bar(labels, values, color=colors)
+plt.title('Challenges in Adopting New Weaving Technology')
+plt.ylabel('Number of Mentions')
+
+# Add value labels
+for bar in bars:
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height,
+            f'{height}',
+            ha='center', va='bottom')
+
+plt.show()
+
