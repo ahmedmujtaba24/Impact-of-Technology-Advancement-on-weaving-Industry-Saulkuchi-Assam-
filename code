@@ -2001,3 +2001,73 @@ for bar in bars:
 
 plt.show()
 
+# ==================== YOUNGER GENERATION TECHNOLOGY PREFERENCE ANALYSIS ====================
+data = [
+    0, 0, 0, 2, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    1, 0, 0, 2, "N/A", "N/A", 1, 2, 0, 0,
+    0, 0, 2, 1, 0, 1, 1, 0, 0, 0,
+    1, 0, 0, 2, 0, 0, 0, 1, 1, 2,
+    0, 0, 0, 2, 1, 0, 0, 2, 1, 0,
+    0, 0, 0, 0, 0
+]
+
+# Initialize counters
+response_counts = {
+    "Yes - Prefer Modern": 0,    # 0
+    "No - Prefer Traditional": 0,  # 1
+    "Not Sure": 0,                # 2
+    "N/A": 0
+}
+
+# Count responses
+for response in data:
+    if response == 0:
+        response_counts["Yes - Prefer Modern"] += 1
+    elif response == 1:
+        response_counts["No - Prefer Traditional"] += 1
+    elif response == 2:
+        response_counts["Not Sure"] += 1
+    else:
+        response_counts["N/A"] += 1
+
+# Calculate percentages
+total_responses = len(data)
+valid_responses = total_responses - response_counts["N/A"]
+percentages = {k: (v / valid_responses) * 100 for k, v in response_counts.items() if k != "N/A"}
+
+# Results
+print("=== YOUNGER GENERATION TECHNOLOGY PREFERENCE ===")
+print(f"Prefer modern technology: {response_counts['Yes - Prefer Modern']} cases ({percentages['Yes - Prefer Modern']:.1f}%)")
+print(f"Prefer traditional methods: {response_counts['No - Prefer Traditional']} cases ({percentages['No - Prefer Traditional']:.1f}%)")
+print(f"Uncertain: {response_counts['Not Sure']} cases ({percentages['Not Sure']:.1f}%)")
+print(f"Missing data: {response_counts['N/A']} cases")
+
+print("\n=== KEY FINDINGS ===")
+print(f"1. Strong majority ({response_counts['Yes - Prefer Modern']} cases, {percentages['Yes - Prefer Modern']:.1f}%) believe younger weavers prefer modern technology")
+print(f"2. Only {response_counts['No - Prefer Traditional']} cases ({percentages['No - Prefer Traditional']:.1f}%) see younger weavers sticking with traditional methods")
+print(f"3. {response_counts['Not Sure']} respondents ({percentages['Not Sure']:.1f}%) were uncertain about preferences")
+
+# Visualization
+import matplotlib.pyplot as plt
+
+labels = ['Prefer Modern', 'Prefer Traditional', 'Not Sure']
+values = [response_counts['Yes - Prefer Modern'], 
+          response_counts['No - Prefer Traditional'],
+          response_counts['Not Sure']]
+colors = ['#1f77b4', '#ff7f0e', '#2ca02c']
+
+plt.figure(figsize=(8, 6))
+bars = plt.bar(labels, values, color=colors)
+plt.title('Younger Generation Weaving Technology Preferences')
+plt.ylabel('Number of Respondents')
+
+# Add value labels
+for bar in bars:
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height,
+            f'{height}\n({height/valid_responses*100:.1f}%)',
+            ha='center', va='bottom')
+
+plt.show()
+
