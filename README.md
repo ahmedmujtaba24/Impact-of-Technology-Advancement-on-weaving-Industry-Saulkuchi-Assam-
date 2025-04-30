@@ -32,7 +32,7 @@ The version in this repository reflects the refined model that incorporated addi
 [_2ndSem_Survey_Data.xlsx_](https://github.com/ahmedmujtaba24/Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam-/blob/main/2ndSem_survey_data.xlsx)
 
 
-- [**Code/**](https://github.com/ahmedmujtaba24/Impact-of-Technology-Advancement-on-weaving-Industry-Saukuchi-Assam-/tree/main/Code)  
+- [**Code/**](https://github.com/ahmedmujtaba24/Impact-of-Technology-Advancement-on-weaving-Industry-Saulkuchi-Assam-/blob/main/code)  
   All Python scripts for data analysis and visualizations.  
   _(Includes scripts for data cleaning, analysis, and plotting graphs.)_
 
